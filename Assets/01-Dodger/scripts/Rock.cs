@@ -8,19 +8,43 @@ public class Rock : MonoBehaviour
     private const float MIN_MOVE_Y = 0.5f;
     private const float MAX_MOVE_Y = 2.0f;
 
+    private const float MIN_RESPAWN_TIME = 0.1f;
+    private const float MAX_RESPAWN_TIME = 1.0f;
+
     public GameObject MySprite;
 
-    private float mSpeed = 0.0f;
-    private float mRotation = 0.0f;
-    private float mRotationSpeed = 0.0f;
+    private float mSpeed;
+    private float mRotation;
+    private float mRotationSpeed;
+
+    private float mRespawnDelay = 9999.9f;
+    private bool mWasSpawned = false;
+    private  Main mOwner = null;
 
     void Start()
     {
         iTween.Init( this.gameObject );
-        resetRock();
     }
 
-    private void resetRock()
+    public void SetOwner( Main owner )
+    {
+        mOwner = owner;
+        ResetRock();
+    }
+
+    private void ResetRock()
+    {
+        mRespawnDelay = Random.Range( MIN_RESPAWN_TIME, MAX_RESPAWN_TIME );
+        //Debug.Log( "------------------" );
+        //Debug.Log( "orig   = " + mRespawnDelay );
+        //Debug.Log( "gametime = " + ( mOwner.GameTime + 1 ) );
+        mRespawnDelay *= ( 1 / ( ( mOwner.GameTime + 1 ) / 60 ) );
+        //Debug.Log( "scaled = " + mRespawnDelay );
+        mRespawnDelay = 0;
+        mWasSpawned = false;
+    }
+
+    private void SpawnRock()
     {
         var pos = transform.position;
         pos.y = 5.5f;
@@ -38,6 +62,8 @@ public class Rock : MonoBehaviour
         //MySprite.transform.Rotate( 0,0, Random.Range( 0.0f, 360.0f ) );
 
         doBounce();
+
+        mWasSpawned = true;
     }
 
     void doBounce()
@@ -56,7 +82,7 @@ public class Rock : MonoBehaviour
     {
         // Are we off-screen?
         if ( transform.position.y < -5.5f ) {
-            resetRock();
+            ResetRock();
             return;
         }
         doBounce();
@@ -64,13 +90,19 @@ public class Rock : MonoBehaviour
 
     void Update()
     {
+        if ( !mWasSpawned ) {
+            mRespawnDelay -= Time.deltaTime;
+            if ( mRespawnDelay <= 0 ) {
+                SpawnRock();
+            }
+            return;
+        }
+
         //transform.Translate( 0, ( -3.0f * Time.deltaTime ) * mSpeed, 0 );
 
         // do rotation
         var rot = mRotation * Time.deltaTime;
         MySprite.transform.Rotate( 0, 0, rot );
         mRotation += ( 1.0f * mRotationSpeed );
-
-
     }
 }

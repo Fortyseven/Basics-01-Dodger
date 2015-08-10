@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class Player : MonoBehaviour
@@ -8,6 +9,8 @@ public class Player : MonoBehaviour
     private const float PLAYER_Y_OFFS = -2.5f;
 
     private bool mIsPlayerDead;
+    private bool mIsJumping;
+    private  float mJumpTimer;
 
     public void Start()
     {
@@ -16,14 +19,26 @@ public class Player : MonoBehaviour
 
     public void OnTriggerEnter2D( Collider2D col )
     {
+        // Invincible while in the air
+        if ( mIsJumping )
+            return;
+
         mIsPlayerDead = true;
         Time.timeScale = 0;
     }
 
     private void ResetPlayer()
     {
-        mIsPlayerDead = false;        
+        mIsPlayerDead = false;
+        mIsJumping = false;
         transform.position = new Vector3( 0, PLAYER_Y_OFFS );
+    }
+
+    private void Jump()
+    {
+        mIsJumping = true;
+        mJumpTimer = 1.0f;
+        GetComponent<Animator>().Play( "jump" );
     }
 
     public void Update()
@@ -36,5 +51,15 @@ public class Player : MonoBehaviour
         var pos = transform.position;
         pos.x = Mathf.Clamp( pos.x, -WALL_X, WALL_X );
         transform.position = pos;
+
+        if ( mIsJumping ) {
+            mJumpTimer -= Time.deltaTime;
+            if ( mJumpTimer <= 0 ) {
+                mIsJumping = false;
+            }
+        }
+        else if ( Input.GetKeyDown( KeyCode.Space ) ) {
+            Jump();
+        }
     }
 }

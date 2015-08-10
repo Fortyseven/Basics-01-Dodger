@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Main : MonoBehaviour
 {
-    private const int MAX_ROCKS = 10;
+    private const int MAX_ROCKS = 20;
     private const float WALL_X = 3.0f;
     private const float ROCK_SPAWN_Y = 5.5f;
 
@@ -18,6 +18,11 @@ public class Main : MonoBehaviour
     private float mGameTime = 0.0f;
     private float mBestGameTime = 0.0f;
 
+    public float GameTime
+    {
+        get { return mGameTime; }
+    }
+
     private GameObject[] mRocks = null;
 
     void Start()
@@ -28,6 +33,7 @@ public class Main : MonoBehaviour
 
         for ( int i = 0; i < MAX_ROCKS; i++ ) {
             mRocks[ i ] = (GameObject)Instantiate( RockPrefab, new Vector3( Random.Range( -WALL_X, WALL_X ), ROCK_SPAWN_Y, 0 ), Quaternion.identity );
+            mRocks[ i ].GetComponent<Rock>().SetOwner( this );
         }
     }
 
