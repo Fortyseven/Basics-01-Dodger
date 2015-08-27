@@ -105,7 +105,6 @@ public class Player : StateMachineMB
             // Handle player input
             if ( Input.GetButtonDown( "Jump" ) && !( (Player)OwnerMB )._is_jumping ) {
                     Owner.ChangeState( PlayerState.JUMPING );
-                }
             }
         }
     }
