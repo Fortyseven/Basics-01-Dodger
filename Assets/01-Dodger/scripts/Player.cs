@@ -98,7 +98,7 @@ public class Player : StateMachineMB
             Owner.transform.position = pos;
 
             // If we're not in the Run state, skip the rest of this.
-            if ((Owner.CurrentState != this) && Owner.InTransition) {
+            if ((Owner.CurrentState != this) || Owner.InTransition) {
                 return;
             }
 
