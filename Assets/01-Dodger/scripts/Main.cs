@@ -15,40 +15,40 @@ public class Main : MonoBehaviour
     public Text UI_Clock;
     public Text UI_ClockBest;
 
-    private float mGameTime = 0.0f;
-    private float mBestGameTime = 0.0f;
+    private float _game_time = 0.0f;
+    private float _best_game_time = 0.0f;
 
-    public float GameTime
-    {
-        get { return mGameTime; }
-    }
+    public float GameTime { get { return _game_time; } }
 
-    private GameObject[] mRocks = null;
+    private GameObject[] _rocks = null;
 
+    /****************************************/
     void Start()
     {
-        mGameTime = 0.0f;
+        _game_time = 0.0f;
 
-        mRocks = new GameObject[ MAX_ROCKS ];
+        _rocks = new GameObject[ MAX_ROCKS ];
 
         for ( int i = 0; i < MAX_ROCKS; i++ ) {
-            mRocks[ i ] = (GameObject)Instantiate( RockPrefab, new Vector3( Random.Range( -WALL_X, WALL_X ), ROCK_SPAWN_Y, 0 ), Quaternion.identity );
-            mRocks[ i ].GetComponent<Rock>().SetOwner( this );
+            _rocks[ i ] = (GameObject)Instantiate( RockPrefab, new Vector3( Random.Range( -WALL_X, WALL_X ), ROCK_SPAWN_Y, 0 ), Quaternion.identity );
+            _rocks[ i ].GetComponent<Rock>().SetOwner( this );
         }
     }
 
+    /****************************************/
     void Update()
     {
         updateScoreBoard();
     }
 
+    /****************************************/
     private void updateScoreBoard()
     {
-        string time_formatted = String.Format( "{0:F2}", mGameTime += Time.deltaTime );
+        string time_formatted = String.Format( "{0:F2}", _game_time += Time.deltaTime );
         UI_Clock.text = time_formatted;
 
-        if ( mGameTime > mBestGameTime ) {
-            mBestGameTime = mGameTime;
+        if ( _game_time > _best_game_time ) {
+            _best_game_time = _game_time;
             UI_ClockBest.text = time_formatted;
         }
 
