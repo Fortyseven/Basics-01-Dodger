@@ -7,7 +7,7 @@ public class Player : StateMachineMB
 
     private const float WALL_X = 3.0f;
     private const float PLAYER_SPEED = 5.0f;
-    private const float PLAYER_Y_OFFS = -2.5f;
+    private const float PLAYER_Y_OFFS = -1.5f;
 
     private bool _is_dead;
     private bool _is_jumping;
@@ -24,13 +24,14 @@ public class Player : StateMachineMB
         public override Enum Name { get { return PlayerState.JUMPING; } }
 
         private float _jump_timer = 0.0f;
+        private Animator _animator;
 
         public override void OnStateEnter( State from_state )
         {
             ( (Player)OwnerMB )._is_jumping = true;
             //Owner.GetComponent<Renderer>().material.color = new Color( 255, 0, 0 );
             _jump_timer = 1.0f;
-            Owner.GetComponent<Animator>().Play( "jump" );
+            _animator.Play( "jump" );
         }
 
         public override void OnStateExit( State to_state )
@@ -54,7 +55,7 @@ public class Player : StateMachineMB
 
         public override void Start()
         {
-            Debug.Log( "Start called" );
+            _animator = Owner.GetComponentInChildren<Animator>();
         }
     }
 
@@ -98,13 +99,13 @@ public class Player : StateMachineMB
             Owner.transform.position = pos;
 
             // If we're not in the Run state, skip the rest of this.
-            if ((Owner.CurrentState != this) || Owner.InTransition) {
+            if ( ( Owner.CurrentState != this ) || Owner.InTransition ) {
                 return;
             }
 
             // Handle player input
             if ( Input.GetButtonDown( "Jump" ) && !( (Player)OwnerMB )._is_jumping ) {
-                    Owner.ChangeState( PlayerState.JUMPING );
+                Owner.ChangeState( PlayerState.JUMPING );
             }
         }
     }
