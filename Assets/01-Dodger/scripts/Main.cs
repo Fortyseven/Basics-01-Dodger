@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Main : MonoBehaviour
 {
-    private const int MAX_ROCKS = 20;
+    private const int MAX_ROCKS = 1;
     private const float WALL_X = 3.0f;
     private const float ROCK_SPAWN_Y = 5.5f;
 
